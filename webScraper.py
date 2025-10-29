@@ -36,24 +36,31 @@ for td in table.find_all('td', attrs={'data-stat': 'player'})[:10]: # loop throu
     
         base = 'https://www.pro-football-reference.com' # base url for player pages
         url_player = base + a_tag['href']  # get the href attribute, EX: "/players/W/WardCa00.htm"
-        time.sleep(1)  # Be polite and avoid overwhelming the server
+        time.sleep(3)  # Be polite and avoid overwhelming the server
         plrResponse = requests.get(url_player) # get the html data for each player
         soupPlr = BeautifulSoup(plrResponse.content, 'html.parser') # parse the html for each player
         plrTable = soupPlr.find('table', id='last5') # find the player table by id 'last5' for last 5 games, WILL NEED AN UPDATE EVERY WEEK MOST LIKELY
         if plrTable:
-            lastGameRow = plrTable.find('tr') # find the first row which is the most recent game
+            lastGameRow = plrTable.find('tr', attrs={'data-row': '7'}) # find the first row which is the most recent game
             if lastGameRow:
-                date_td = lastGameRow.find('td', attrs={'data-stat': 'date'}) #find the date of the most recent game within the td
+                date_td = lastGameRow.find('th', attrs={'data-stat': 'date'}) #find the date of the most recent game within the td
+                dateA = date_td.find('a')
+                if dateA:
+                    date = dateA.text.strip()
+                else:
+                    date = date_td.text.strip()
                 team_td = lastGameRow.find('td', attrs={'data-stat': 'team_name_abbr'}) #find the team name within the td
                 opp_td = lastGameRow.find('td', attrs={'data-stat': 'opp_name'}) #find the opponent name within the td
                 result_td = lastGameRow.find('td', attrs={'data-stat': 'game_result'}) #find the result within the td
                 
-                date = date_td.text.strip() if date_td else "N/A" # for each of them if td exist get the text otherwise return N/A
+                
                 team = team_td.text.strip() if team_td else "N/A"
                 opp = opp_td.text.strip() if opp_td else "N/A"
                 result = result_td.text.strip() if result_td else "N/A"
                 
                 mainStr = str(draftNum) + "\t" + name + "\t" + date + "\t" + team + "\t" + opp + "\t" + result + "\n" #concantinate all the info into mainStr
-        infosheet.write(mainStr) # write it into the infosheet
+                infosheet.write(mainStr)# write it into the infosheet
+                print(mainStr) #print the main str in terminal
+         
         draftNum += 1 # increment draft number
-        print(mainStr) #print the main str in terminal
+        
