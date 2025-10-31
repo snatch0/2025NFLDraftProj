@@ -45,10 +45,9 @@ for td in table.find_all('td', attrs={'data-stat': 'player'})[:10]: # loop throu
 
         date_row = tbody.find('tr')
         date_th = date_row.find('th', class_='left' ,attrs={'data-stat': 'date'}) #find the date of the most recent game within the td
-        print(date_th.text.strip())
         date_th = date_th.text.strip()
-        team_td = date_row.find('td', attrs={'data-stat': 'team'})
-        opp_td = date_row.find('td', attrs={'data-stat': 'opp'})
+        team_td = date_row.find('td', attrs={'data-stat': 'team_name_abbr'})
+        opp_td = date_row.find('td', attrs={'data-stat': 'opp_name_abbr'})
         wl_td = date_row.find('td', attrs={'data-stat': 'game_result'})
         team = team_td.text.strip() if team_td else "N/A"
         opp = opp_td.text.strip() if opp_td else "N/A"
