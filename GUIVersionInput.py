@@ -34,12 +34,13 @@ def returnPlrInfo():
 bubbleFont = ("Impact", 30)
 
 app.title("NFL 2025 DRAFT APP")
-app.geometry("900x500")
+app.geometry("900x700")
 app.configure(fg_color="#333333")
-app.grid_columnconfigure(5, weight=1)
+app.rowconfigure((0,1), weight=1)
+app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
 
 topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFont, text_color="white")
-topLabel.grid(row=0, column=4, padx=20, pady=(20, 10))
+
 
 
 pil_image = Image.open(random_img)
@@ -47,40 +48,55 @@ pil_image = Image.open(random_img)
 randomImgUpload = customtkinter.CTkImage(light_image=pil_image, size=(150, 200))
 
 profileLabel = customtkinter.CTkLabel(app, image=randomImgUpload, text="")
-profileLabel.grid(row=1, column=0,pady=(100, 5), padx = 15, sticky="w")
+
 
 askLabel = customtkinter.CTkLabel(app, text="Enter Draft Number:", font=("Impact", 20), text_color="white")
-askLabel.grid(row=1, column=0, padx=20, pady=10, sticky="n")
+
 
 draftInput = customtkinter.CTkEntry(app, width=150, height=40, font=("Impact", 20), textvariable=userDraftInput)
-draftInput.grid(row=1, column=1, padx=20, pady=10, sticky="n")
+
 
 findButton = customtkinter.CTkButton(app, text="Find Player", font=("Impact", 20), width=150, height=40, command=returnPlrInfo)
-findButton.grid(row=1, column=2, padx=20, pady=10, sticky="n")
+
 
 rookieLabel = customtkinter.CTkLabel(app, text="Rookie Name:", font=("Impact", 20), text_color="white")
 
 plrNameLabel = customtkinter.CTkLabel(app, text=plrName.get(), font=("Impact", 20), text_color="white", textvariable=plrName)
-plrNameLabel.grid(row=2, column=2, padx=20, pady=10, sticky="n")
+
 
 draftNumberLabel = customtkinter.CTkLabel(app, text="Draft Number:", font=("Impact", 20), text_color="white")
-draftNumberLabel.grid(row=2, column=1, padx=10, pady=0, sticky="n")
+
 
 dateGameLabel = customtkinter.CTkLabel(app, text="Date of Recent Game:", font=("Impact", 20), text_color="white")
-dateGameLabel.grid(row=3, column=0, padx=20, pady=10, sticky="n")
+
 
 teamLabel = customtkinter.CTkLabel(app, text="Team:", font=("Impact", 20), text_color="white")
-teamLabel.grid(row=4, column=0, padx=20, pady=10, sticky="n")
+
 
 opponentLabel = customtkinter.CTkLabel(app, text="Opponent:", font=("Impact", 20), text_color="white")
-opponentLabel.grid(row=5, column=0, padx=20, pady=10, sticky="n")
+
 
 winOrLoseLabel = customtkinter.CTkLabel(app, text="W/L:", font=("Impact", 20), text_color="white")
-winOrLoseLabel.grid(row=6, column=0, padx=20, pady=10, sticky="n")
+
 
 scoreLabel = customtkinter.CTkLabel(app, text="Score of Recent Game:", font=("Impact", 20), text_color="white")
-scoreLabel.grid(row=7, column=0, padx=20, pady=10, sticky="n")
 
+topLabel.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
+
+askLabel.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+draftInput.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+findButton.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+
+profileLabel.grid(row=3, column=0, rowspan=6,  padx=20, pady=20, sticky="nsew")
+
+rookieLabel.grid(row=3, column=2, padx=20, pady=20, sticky="nw")
+plrNameLabel.grid(row=3, column=3, padx=20, pady=20, sticky="nw")
+draftNumberLabel.grid(row=4, column=2, padx=20, pady=20, sticky="nw")
+dateGameLabel.grid(row=5, column=2, padx=20, pady=20, sticky="nw")
+teamLabel.grid(row=6, column=2, padx=20, pady=20, sticky="nw")
+opponentLabel.grid(row=7, column=2, padx=20, pady=20, sticky="nw")
+winOrLoseLabel.grid(row=8, column=2, padx=20, pady=20, sticky="nw")
+scoreLabel.grid(row=9, column=2, padx=20, pady=20, sticky="nw")
 
 
 
