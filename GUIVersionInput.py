@@ -10,7 +10,7 @@ team = customtkinter.StringVar()
 opponent = customtkinter.StringVar()
 winOrLose = customtkinter.StringVar()
 score_ofRecentGame = customtkinter.StringVar()
-
+globalDraftNumberVariable = customtkinter.StringVar()
 def returnPlrInfo():
     draft_number = draftInput.get()
     
@@ -20,14 +20,26 @@ def returnPlrInfo():
     for line in plr_info_file:
         if line.startswith(draft_number):
             player_name = line.split("\t")[1]
-            draft_number = line.split("\t")[0]
+            globalDraftNumberVariable = line.split("\t")[0]
             date_recent_game = line.split("\t")[2]
             team = line.split("\t")[3]
             opponent = line.split("\t")[4]
             winOrLose = line.split("\t")[5]
             score_ofRecentGame = line.split("\t")[6]
-            
+            print( player_name)
+            print(draft_number)
+            print(date_recent_game)
+            print(team)
+            print(opponent)
+            print(winOrLose)
+            print(score_ofRecentGame)
             plrName.set("Name: " + player_name + "\n")
+            globalDraftNumberVariable.set("Draft Number: " + globalDraftNumberVariable + "\n")
+            date_recent_game.set("Date of Recent Game: " + date_recent_game + "\n")
+            team.set("Team: " + team + "\n")
+            opponent.set("Opponent: " + opponent + "\n")    
+            winOrLose.set("W/L: " + winOrLose + "\n")
+            score_ofRecentGame.set("Score of Recent Game: " + score_ofRecentGame + "\n")
             break
 
 
@@ -36,10 +48,13 @@ bubbleFont = ("Impact", 30)
 app.title("NFL 2025 DRAFT APP")
 app.geometry("900x700")
 app.configure(fg_color="#333333")
-app.rowconfigure((0,1), weight=1)
-app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
+app.rowconfigure((0,1), weight=0)
+app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=0)
 
-topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFont, text_color="white")
+topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFont, text_color="white",
+fg_color="#222222",
+corner_radius=15
+)
 
 
 
@@ -64,22 +79,22 @@ rookieLabel = customtkinter.CTkLabel(app, text="Rookie Name:", font=("Impact", 2
 plrNameLabel = customtkinter.CTkLabel(app, text=plrName.get(), font=("Impact", 20), text_color="white", textvariable=plrName)
 
 
-draftNumberLabel = customtkinter.CTkLabel(app, text="Draft Number:", font=("Impact", 20), text_color="white")
+draftNumberLabel = customtkinter.CTkLabel(app, text=globalDraftNumberVariable.get(), font=("Impact", 20), text_color="white", textvariable=globalDraftNumberVariable)
 
 
-dateGameLabel = customtkinter.CTkLabel(app, text="Date of Recent Game:", font=("Impact", 20), text_color="white")
+dateGameLabel = customtkinter.CTkLabel(app, text=date_recent_game.get() ,font=("Impact", 20), text_color="white", textVariable =date_recent_game)
 
 
-teamLabel = customtkinter.CTkLabel(app, text="Team:", font=("Impact", 20), text_color="white")
+teamLabel = customtkinter.CTkLabel(app, text=team.get(), font=("Impact", 20), text_color="white", textVariable=team)
 
 
-opponentLabel = customtkinter.CTkLabel(app, text="Opponent:", font=("Impact", 20), text_color="white")
+opponentLabel = customtkinter.CTkLabel(app, text=opponent.get(), font=("Impact", 20), text_color="white", textVariable=opponent)
 
 
-winOrLoseLabel = customtkinter.CTkLabel(app, text="W/L:", font=("Impact", 20), text_color="white")
+winOrLoseLabel = customtkinter.CTkLabel(app, text=winOrLose.get(), font=("Impact", 20), text_color="white", textVariable=winOrLose)
 
 
-scoreLabel = customtkinter.CTkLabel(app, text="Score of Recent Game:", font=("Impact", 20), text_color="white")
+scoreLabel = customtkinter.CTkLabel(app, text=score_ofRecentGame.get(), font=("Impact", 20), text_color="white", textVariable = score_ofRecentGame)
 
 topLabel.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
 
@@ -89,14 +104,14 @@ findButton.grid(row=1, column=2, padx=20, pady=20, sticky="w")
 
 profileLabel.grid(row=3, column=0, rowspan=6,  padx=20, pady=20, sticky="nsew")
 
-rookieLabel.grid(row=3, column=2, padx=20, pady=20, sticky="nw")
-plrNameLabel.grid(row=3, column=3, padx=20, pady=20, sticky="nw")
-draftNumberLabel.grid(row=4, column=2, padx=20, pady=20, sticky="nw")
-dateGameLabel.grid(row=5, column=2, padx=20, pady=20, sticky="nw")
-teamLabel.grid(row=6, column=2, padx=20, pady=20, sticky="nw")
-opponentLabel.grid(row=7, column=2, padx=20, pady=20, sticky="nw")
-winOrLoseLabel.grid(row=8, column=2, padx=20, pady=20, sticky="nw")
-scoreLabel.grid(row=9, column=2, padx=20, pady=20, sticky="nw")
+rookieLabel.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+plrNameLabel.grid(row=3, column=1, padx=20, pady=20, sticky="nw")
+draftNumberLabel.grid(row=4, column=1, padx=20, pady=20, sticky="nw")
+dateGameLabel.grid(row=5, column=1, padx=20, pady=20, sticky="nw")
+teamLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")
+opponentLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")
+winOrLoseLabel.grid(row=8, column=1, padx=20, pady=20, sticky="nw")
+scoreLabel.grid(row=9, column=1, padx=20, pady=20, sticky="nw")
 
 
 
