@@ -138,10 +138,14 @@ winOrLoseLabel = customtkinter.CTkLabel(app, text=winOrLoseA.get(), font=("Impac
 
 
 scoreLabel = customtkinter.CTkLabel(app, text=score_ofRecentGameA.get(), font=("Impact", 20), text_color="white", textvariable = score_ofRecentGameA)# score label
+# This makes the middle columns expand to fill available space
+app.grid_columnconfigure(0, weight=0)
+app.grid_columnconfigure(1, weight=1)  # Center column
+app.grid_columnconfigure(4, weight=0)
 
-topLabel.grid(row=0, column=1, padx=20, pady=20, sticky="e")# top label grid
-topImageLabel1.grid(row=0, column=0, padx=20, pady=20, sticky="w")# top image 1 grid
-topImageLabel2.grid(row=0, column=4, padx=20, pady=20, sticky="w")# top image 2 grid
+topLabel.grid(row=0, column=1, padx=20, pady=20, sticky="ew")       # Center label
+topImageLabel1.grid(row=0, column=0, padx=20, pady=20, sticky="w")  # Left image
+topImageLabel2.grid(row=0, column=4, padx=20, pady=20, sticky="e")  # Right image
 
 askLabel.grid(row=1, column=0, padx=20, pady=20, sticky="w")# ask label grid
 draftInput.grid(row=1, column=1, padx=20, pady=20, sticky="w")# draft input grid
@@ -153,9 +157,8 @@ rookieLabel.grid(row=3, column=1, padx=20, pady=20, sticky="w")# rookie label gr
 plrNameLabel.grid(row=3, column=1, padx=20, pady=20, sticky="nw")# player name label grid
 draftNumberLabel.grid(row=4, column=1, padx=20, pady=20, sticky="nw")# draft number label grid
 dateGameLabel.grid(row=5, column=1, padx=20, pady=20, sticky="nw")# date of game label grid
-teamLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")# team label grid
+teamLabel.grid(row=6, column=1, padx=20, pady=20, sticky="nw")# team label grid
 opponentLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")# opponent label grid
-winOrLoseLabel.grid(row=8, column=1, padx=20, pady=20, sticky="nw")# win or lose label grid
 scoreLabel.grid(row=9, column=1, padx=20, pady=20, sticky="nw")# score label grid
 
 
