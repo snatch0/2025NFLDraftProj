@@ -4,7 +4,9 @@ from PIL import Image, ImageTk
 import tempfile
 import os
 
-
+topImagePath = r"C:\Users\zapata1498\Downloads\NFL-logo.png" #top image path
+topImagePath2 = r"C:\Users\zapata1498\Downloads\2025_NFL_Draft_logo.png"#top image path 2
+random_img = r"C:\Users\zapata1498\Desktop\python\unknown-person-hidden-covered-masked-600nw-1552977773.png"
 app = customtkinter.CTk() #main app window
 userDraftInput = customtkinter.StringVar() #user input variable
 plrName= customtkinter.StringVar() # player name variable
@@ -20,7 +22,8 @@ imgSlot.set(random_img) # set default image path
 def get_img_path(draft_number):
     file1 = open("plrinfo.txt", "r")
     for line in file1:
-        pick, imgurl = line.strip().split("\t")
+        imgurl = line.strip().split("\t")
+        pick = imgurl
         if pick == draft_number:
             return imgurl
 
@@ -88,7 +91,19 @@ corner_radius=15
 
 pil_image = Image.open(random_img) #base image opened
 
+topImage1 = Image.open(topImagePath) #top image 1 opened
+
+topImage2 = Image.open(topImagePath2) #top image 2 opened
+
+
+
 randomImgUpload = customtkinter.CTkImage(light_image=pil_image, size=(150, 200)) #resize image for CTk
+
+nflLogo = customtkinter.CTkImage(light_image=topImage1, size=(120, 100)) #resize top image 1 for CTk
+nflDraftLogo = customtkinter.CTkImage(light_image=topImage2, size=(100, 100)) #resize top image 2 for CTk
+
+topImageLabel1 = customtkinter.CTkLabel(app, image=nflLogo, text="") #top image 1 label
+topImageLabel2 = customtkinter.CTkLabel(app, image=nflDraftLogo, text="") #top image 2 label
 
 profileLabel = customtkinter.CTkLabel(app, image=randomImgUpload, text="") #image label
 
@@ -124,7 +139,9 @@ winOrLoseLabel = customtkinter.CTkLabel(app, text=winOrLoseA.get(), font=("Impac
 
 scoreLabel = customtkinter.CTkLabel(app, text=score_ofRecentGameA.get(), font=("Impact", 20), text_color="white", textvariable = score_ofRecentGameA)# score label
 
-topLabel.grid(row=0, column=2, padx=20, pady=20, sticky="e")# top label grid
+topLabel.grid(row=0, column=1, padx=20, pady=20, sticky="e")# top label grid
+topImageLabel1.grid(row=0, column=0, padx=20, pady=20, sticky="w")# top image 1 grid
+topImageLabel2.grid(row=0, column=4, padx=20, pady=20, sticky="w")# top image 2 grid
 
 askLabel.grid(row=1, column=0, padx=20, pady=20, sticky="w")# ask label grid
 draftInput.grid(row=1, column=1, padx=20, pady=20, sticky="w")# draft input grid
