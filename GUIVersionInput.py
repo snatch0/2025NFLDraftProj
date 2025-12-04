@@ -3,6 +3,7 @@ import customtkinter
 from PIL import Image, ImageTk
 import tempfile
 import os
+import io
 
 topImagePath = r"C:\Users\zapata1498\Downloads\NFL-logo.png" #top image path
 topImagePath2 = r"C:\Users\zapata1498\Downloads\2025_NFL_Draft_logo.png"#top image path 2
@@ -19,25 +20,25 @@ globalDraftNumberVariable = customtkinter.StringVar()# draft number variable
 imgSlot = customtkinter.StringVar()# image slot variable
 imgSlot.set(random_img) # set default image path
 
-def get_img_path(draft_number):
-    file1 = open("plrinfo.txt", "r")
-    for line in file1:
-        imgurl = line.strip().split("\t")
-        pick = imgurl
-        if pick == draft_number:
-            return imgurl
-
+flexImg = None
 def changeImg():
-    print("image changed")
-    random_img = r"C:\Users\zapata1498\Desktop\python\unknown-person-hidden-covered-masked-600nw-1552977773.png" #default image path
-    try:
-        response = requests.get(get_img_path(draftInput.get()), stream=True)
-        image_data = response.content
-    except requests.exceptions.RequestException as e:
-        print(f"Error downloading image: {e}")
-        return
+    draftNumber = draftInput.get()
     
-    
+    plr_info_file = open("imgsources.txt", "r")
+    img_url = None
+    for line in plr_info_file:
+        field = line.split("\t")
+        if field[0] == draftNumber:
+            img_url = field[1].strip()
+            break
+    print(img_url)
+    if img_url:
+        response = requests.get(img_url, stream=True) # Download the image
+        
+        image_data = response.content# Get the image data
+        pil_image = Image.open(io.BytesIO(image_data))# Open the image with PIL
+        flexImg = customtkinter.CTkImage(light_image=pil_image, size=(150, 200))#q Resize the image for CTk
+        profileLabel.configure(image=flexImg)
     
     
 
@@ -87,7 +88,12 @@ fg_color="#222222",
 corner_radius=15
 )
 
-
+class playerCardFrame(customtkinter.CTkFrame):
+    def __init__(self):
+        super().__init__(master, **kwargs)
+        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="checkbox 1")
+        self.checkbox_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="w")
+    
 
 pil_image = Image.open(random_img) #base image opened
 
