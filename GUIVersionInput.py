@@ -19,7 +19,7 @@ score_ofRecentGameA = customtkinter.StringVar()# score of recent game variable
 globalDraftNumberVariable = customtkinter.StringVar()# draft number variable
 imgSlot = customtkinter.StringVar()# image slot variable
 imgSlot.set(random_img) # set default image path
-cardFrame = 
+
 flexImg = None# global image variable
 def changeImg():# function to change image
     draftNumber = draftInput.get()# get draft number from input
@@ -69,13 +69,13 @@ def returnPlrInfo():# function to return player info
             print(opponent)
             print(winOrLose)
             print(score_ofRecentGame)#print all values to console
-            plrName.set("Name: " + player_name + "\n")
-            globalDraftNumberVariable.set("Draft Number: " + draftN + "\n")
-            date_recent_gameA.set("Date of Recent Game: " + date_recent_game + "\n")
-            teamA.set("Team: " + team + "\n")
-            opponentA.set("Opponent: " + opponent + "\n")    
-            winOrLoseA.set("W/L: " + winOrLose + "\n")
-            score_ofRecentGameA.set("Score of Recent Game: " + score_ofRecentGame + "\n")# set all variables for labels
+            plrName.set("Name: " + player_name)
+            globalDraftNumberVariable.set("Draft Number: " + draftN)
+            date_recent_gameA.set("Date of Recent Game: " + date_recent_game)
+            teamA.set("Team: " + team)
+            opponentA.set("Opponent: " + opponent)    
+            winOrLoseA.set("W/L: " + winOrLose)
+            score_ofRecentGameA.set("Score of Recent Game: " + score_ofRecentGame)# set all variables for labels
             break
 
 
@@ -85,28 +85,20 @@ app.title("NFL 2025 DRAFT APP")
 app.geometry("900x700")
 app.configure(fg_color="#333333")
 app.rowconfigure((0,1), weight=0)
-app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=0)
+app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=3)
 
 topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFont, text_color="white",
 fg_color="#222222",
 corner_radius=15
 )
 #frame in progress
-class playerCardFrame(customtkinter.CTkFrame):
-    def __init__(self):
-        super().__init__()
-        self.title("my app")
-        self.geometry("400x180")
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure((0, 1), weight=1)
 
-        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="checkbox 1")
-        self.checkbox_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="w")
-        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="checkbox 2")
-        self.checkbox_2.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="w")
-        self.button = customtkinter.CTkButton(self, text="my button", command=self.button_callback)
-        self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
       
+
+cardFrame = customtkinter.CTkFrame(app, width=600, height=700, corner_radius=15, fg_color="#222222")
+cardFrame.grid(row=2, column=1, padx=20, pady=20, sticky="nsew")
+cardFrame.rowconfigure((0,1,2,3,4,5,6,7,8,9), weight=1)
+
     
 
 pil_image = Image.open(random_img) #base image opened
@@ -125,7 +117,7 @@ nflDraftLogo = customtkinter.CTkImage(light_image=topImage2, size=(100, 100)) #r
 topImageLabel1 = customtkinter.CTkLabel(app, image=nflLogo, text="") #top image 1 label
 topImageLabel2 = customtkinter.CTkLabel(app, image=nflDraftLogo, text="") #top image 2 label
 
-profileLabel = customtkinter.CTkLabel(app, image=randomImgUpload, text="") #image label
+profileLabel = customtkinter.CTkLabel(cardFrame, image=randomImgUpload, text="") #image label
 
 
 askLabel = customtkinter.CTkLabel(app, text="Enter Draft Number:", font=("Impact", 20), text_color="white") #ask label
@@ -137,27 +129,14 @@ draftInput = customtkinter.CTkEntry(app, width=150, height=40, font=("Impact", 2
 findButton = customtkinter.CTkButton(app, text="Find Player", font=("Impact", 20), width=150, height=40, command=returnPlrInfo) #find button
 
 
-rookieLabel = customtkinter.CTkLabel(app, text="Rookie Name:", font=("Impact", 20), text_color="white")# rookie label
-
-plrNameLabel = customtkinter.CTkLabel(app, text=plrName.get(), font=("Impact", 20), text_color="white", textvariable=plrName)# player name label
-
-
-draftNumberLabel = customtkinter.CTkLabel(app, text=globalDraftNumberVariable.get(), font=("Impact", 20), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
-
-
-dateGameLabel = customtkinter.CTkLabel(app, text=date_recent_gameA.get(), font=("Impact", 20), text_color="white", textvariable = date_recent_gameA)# date of game label
-
-
-teamLabel = customtkinter.CTkLabel(app, text=teamA.get(), font=("Impact", 20), text_color="white", textvariable=teamA)# team label
-
-
-opponentLabel = customtkinter.CTkLabel(app, text=opponentA.get(), font=("Impact", 20), text_color="white", textvariable=opponentA)# opponent label
-
-
-winOrLoseLabel = customtkinter.CTkLabel(app, text=winOrLoseA.get(), font=("Impact", 20), text_color="white", textvariable=winOrLoseA)# win or lose label
-
-
-scoreLabel = customtkinter.CTkLabel(app, text=score_ofRecentGameA.get(), font=("Impact", 20), text_color="white", textvariable = score_ofRecentGameA)# score label
+rookieLabel = customtkinter.CTkLabel(cardFrame, text="Rookie Name:", font=("Impact", 20), text_color="white")# rookie label
+plrNameLabel = customtkinter.CTkLabel(cardFrame, text=plrName.get(), font=("Impact", 20), text_color="white", textvariable=plrName)# player name label
+draftNumberLabel = customtkinter.CTkLabel(cardFrame, text=globalDraftNumberVariable.get(), font=("Impact", 20), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
+dateGameLabel = customtkinter.CTkLabel(cardFrame, text=date_recent_gameA.get(), font=("Impact", 20), text_color="white", textvariable = date_recent_gameA)# date of game label
+teamLabel = customtkinter.CTkLabel(cardFrame, text=teamA.get(), font=("Impact", 20), text_color="white", textvariable=teamA)# team label
+opponentLabel = customtkinter.CTkLabel(cardFrame, text=opponentA.get(), font=("Impact", 20), text_color="white", textvariable=opponentA)# opponent label
+winOrLoseLabel = customtkinter.CTkLabel(cardFrame, text=winOrLoseA.get(), font=("Impact", 20), text_color="white", textvariable=winOrLoseA)# win or lose label
+scoreLabel = customtkinter.CTkLabel(cardFrame, text=score_ofRecentGameA.get(), font=("Impact", 20), text_color="white", textvariable = score_ofRecentGameA)# score label
 # This makes the middle columns expand to fill available space
 app.grid_columnconfigure(0, weight=0)
 app.grid_columnconfigure(1, weight=1)  # Center column
@@ -173,6 +152,8 @@ findButton.grid(row=1, column=2, padx=20, pady=20, sticky="w")# find button grid
 
 profileLabel.grid(row=3, column=0, rowspan=6,  padx=20, pady=20, sticky="nsew") #image label grid
 
+
+cardFrame.grid_propagate(False)
 rookieLabel.grid(row=3, column=1, padx=20, pady=20, sticky="w")# rookie label grid
 plrNameLabel.grid(row=3, column=1, padx=20, pady=20, sticky="nw")# player name label grid
 draftNumberLabel.grid(row=4, column=1, padx=20, pady=20, sticky="nw")# draft number label grid
@@ -186,4 +167,4 @@ app.mainloop()
 #FIX NOTES
 
 #make the layout like a "card"
-#make it so spaces dont spread when input is taken
+
