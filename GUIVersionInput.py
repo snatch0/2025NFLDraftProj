@@ -19,59 +19,63 @@ score_ofRecentGameA = customtkinter.StringVar()# score of recent game variable
 globalDraftNumberVariable = customtkinter.StringVar()# draft number variable
 imgSlot = customtkinter.StringVar()# image slot variable
 imgSlot.set(random_img) # set default image path
-
-flexImg = None
-def changeImg():
-    draftNumber = draftInput.get()
+cardFrame = 
+flexImg = None# global image variable
+def changeImg():# function to change image
+    draftNumber = draftInput.get()# get draft number from input
     
-    plr_info_file = open("imgsources.txt", "r")
-    img_url = None
-    for line in plr_info_file:
-        field = line.split("\t")
-        if field[0] == draftNumber:
-            img_url = field[1].strip()
-            break
+    plr_info_file = open("imgsources.txt", "r")# open image sources file
+    img_url = None# initialize image url variable   
+    for line in plr_info_file:# loop through lines in file
+        field = line.split("\t")# split line into fields
+        if field[0] == draftNumber:# check if draft number matches
+            img_url = field[1].strip()# get image url
+            break# break loop
     print(img_url)
-    if img_url:
+    if img_url == "N/A":# if image url is N/A
+        img_url = random_img# set image url to default image path
+        flexImg = customtkinter.CTkImage(light_image=Image.open(img_url), size=(150, 200))# Resize the image for CTk
+        profileLabel.configure(image=flexImg)# Update the profile label with the new image
+    else: # if image url is found
         response = requests.get(img_url, stream=True) # Download the image
         
         image_data = response.content# Get the image data
         pil_image = Image.open(io.BytesIO(image_data))# Open the image with PIL
         flexImg = customtkinter.CTkImage(light_image=pil_image, size=(150, 200))#q Resize the image for CTk
-        profileLabel.configure(image=flexImg)
+        profileLabel.configure(image=flexImg)# Update the profile label with the new image
     
     
 
-def returnPlrInfo():
-    changeImg()
-    draft_number = draftInput.get()
+def returnPlrInfo():# function to return player info
+    changeImg()# change image based on draft number
+    draft_number = draftInput.get()# get draft number from input
     
-    print(draft_number)
+    print(draft_number)# print draft number to console
 
-    plr_info_file = open("plrinfo.txt", "r")
-    for line in plr_info_file:
-        if line.startswith(draft_number):
-            player_name = line.split("\t")[1]
-            draftN = line.split("\t")[0]
-            date_recent_game = line.split("\t")[2]
-            team = line.split("\t")[3]
-            opponent = line.split("\t")[4]
-            winOrLose = line.split("\t")[5]
-            score_ofRecentGame = line.split("\t")[6]
+    plr_info_file = open("plrinfo.txt", "r")# open player info file
+    for line in plr_info_file:# loop through lines in file
+        if line.startswith(draft_number):# check if line starts with draft number
+            player_name = line.split("\t")[1]# get player name
+            draftN = line.split("\t")[0]# get draft number
+            date_recent_game = line.split("\t")[2]# get date of recent game
+            team = line.split("\t")[3]# get team
+            opponent = line.split("\t")[4]# get opponent
+            winOrLose = line.split("\t")[5]# get win or lose
+            score_ofRecentGame = line.split("\t")[6]# get score of recent game
             print( player_name)
             print(draft_number)
             print(date_recent_game)
             print(team)
             print(opponent)
             print(winOrLose)
-            print(score_ofRecentGame)
+            print(score_ofRecentGame)#print all values to console
             plrName.set("Name: " + player_name + "\n")
             globalDraftNumberVariable.set("Draft Number: " + draftN + "\n")
             date_recent_gameA.set("Date of Recent Game: " + date_recent_game + "\n")
             teamA.set("Team: " + team + "\n")
             opponentA.set("Opponent: " + opponent + "\n")    
             winOrLoseA.set("W/L: " + winOrLose + "\n")
-            score_ofRecentGameA.set("Score of Recent Game: " + score_ofRecentGame + "\n")
+            score_ofRecentGameA.set("Score of Recent Game: " + score_ofRecentGame + "\n")# set all variables for labels
             break
 
 
@@ -87,12 +91,22 @@ topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFon
 fg_color="#222222",
 corner_radius=15
 )
-
+#frame in progress
 class playerCardFrame(customtkinter.CTkFrame):
     def __init__(self):
-        super().__init__(master, **kwargs)
+        super().__init__()
+        self.title("my app")
+        self.geometry("400x180")
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure((0, 1), weight=1)
+
         self.checkbox_1 = customtkinter.CTkCheckBox(self, text="checkbox 1")
         self.checkbox_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="w")
+        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="checkbox 2")
+        self.checkbox_2.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="w")
+        self.button = customtkinter.CTkButton(self, text="my button", command=self.button_callback)
+        self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+      
     
 
 pil_image = Image.open(random_img) #base image opened
@@ -168,5 +182,8 @@ opponentLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")# opponent lab
 scoreLabel.grid(row=9, column=1, padx=20, pady=20, sticky="nw")# score label grid
 
 
-
 app.mainloop()
+#FIX NOTES
+
+#make the layout like a "card"
+#make it so spaces dont spread when input is taken
