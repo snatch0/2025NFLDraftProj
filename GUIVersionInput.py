@@ -22,6 +22,7 @@ imgSlot.set(random_img) # set default image path
 
 flexImg = None# global image variable
 def changeImg():# function to change image
+    global flexImg
     draftNumber = draftInput.get()# get draft number from input
     
     plr_info_file = open("imgsources.txt", "r")# open image sources file
@@ -36,13 +37,23 @@ def changeImg():# function to change image
         img_url = random_img# set image url to default image path
         flexImg = customtkinter.CTkImage(light_image=Image.open(img_url), size=(150, 200))# Resize the image for CTk
         profileLabel.configure(image=flexImg)# Update the profile label with the new image
+        profileLabel.image = flexImg
     else: # if image url is found
-        response = requests.get(img_url, stream=True) # Download the image
-        
-        image_data = response.content# Get the image data
-        pil_image = Image.open(io.BytesIO(image_data))# Open the image with PIL
-        flexImg = customtkinter.CTkImage(light_image=pil_image, size=(150, 200))#q Resize the image for CTk
-        profileLabel.configure(image=flexImg)# Update the profile label with the new image
+        try:
+            response = requests.get(img_url, stream=True, timeout=6) # Download the image
+            image_data = response.content# Get the image data
+            pil_image = Image.open(io.BytesIO(image_data))# Open the image with PIL
+            flexImg = customtkinter.CTkImage(light_image=pil_image, size=(150, 200))#q Resize the image for CTk
+            profileLabel.configure(image=flexImg)# Update the profile label with the new image
+            profileLabel.image = flexImg
+        except Exception as e:
+            # fallback to default local image if download fails
+            try:
+                flexImg = customtkinter.CTkImage(light_image=Image.open(random_img), size=(150, 200))
+                profileLabel.configure(image=flexImg)
+                profileLabel.image = flexImg
+            except Exception:
+                print("Failed to load image:", e)
     
     
 
@@ -69,7 +80,7 @@ def returnPlrInfo():# function to return player info
             print(opponent)
             print(winOrLose)
             print(score_ofRecentGame)#print all values to console
-            plrName.set("Name: " + player_name)
+            plrName.set(player_name)
             globalDraftNumberVariable.set("Draft Number: " + draftN)
             date_recent_gameA.set("Date of Recent Game: " + date_recent_game)
             teamA.set("Team: " + team)
@@ -79,15 +90,15 @@ def returnPlrInfo():# function to return player info
             break
 
 
-bubbleFont = ("Impact", 30)
+generalFont = ("Roboto", 30, "bold") #general font for app
 
 app.title("NFL 2025 DRAFT APP")
 app.geometry("900x700")
 app.configure(fg_color="#333333")
-app.rowconfigure((0,1), weight=0)
-app.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=3)
 
-topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=bubbleFont, text_color="white",
+
+
+topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=generalFont, text_color="white",
 fg_color="#222222",
 corner_radius=15
 )
@@ -96,9 +107,11 @@ corner_radius=15
       
 
 cardFrame = customtkinter.CTkFrame(app, width=600, height=700, corner_radius=15, fg_color="#222222")
-cardFrame.grid(row=2, column=1, padx=20, pady=20, sticky="nsew")
-cardFrame.rowconfigure((0,1,2,3,4,5,6,7,8,9), weight=1)
 
+# make the cardFrame layout smoother: dedicated two columns (image + info)
+cardFrame.rowconfigure((0,1,2,3,4,5,6,7,8,9), weight=1)
+#cardFrame.grid_columnconfigure(0, weight=1)  # image column
+#cardFrame.grid_columnconfigure(1, weight=1)  # info column
     
 
 pil_image = Image.open(random_img) #base image opened
@@ -118,53 +131,54 @@ topImageLabel1 = customtkinter.CTkLabel(app, image=nflLogo, text="") #top image 
 topImageLabel2 = customtkinter.CTkLabel(app, image=nflDraftLogo, text="") #top image 2 label
 
 profileLabel = customtkinter.CTkLabel(cardFrame, image=randomImgUpload, text="") #image label
+profileLabel.image = randomImgUpload
+
+askLabel = customtkinter.CTkLabel(app, text="Enter Draft Number:", font=("Roboto", 30, "bold"), text_color="white") #ask label
 
 
-askLabel = customtkinter.CTkLabel(app, text="Enter Draft Number:", font=("Impact", 20), text_color="white") #ask label
+draftInput = customtkinter.CTkEntry(app, width=150, height=40, font=("Roboto", 20), textvariable=userDraftInput) #draft input entry
 
 
-draftInput = customtkinter.CTkEntry(app, width=150, height=40, font=("Impact", 20), textvariable=userDraftInput) #draft input entry
+findButton = customtkinter.CTkButton(app, text="Find Player", font=("Roboto", 20), width=150, height=40, command=returnPlrInfo) #find button
 
-
-findButton = customtkinter.CTkButton(app, text="Find Player", font=("Impact", 20), width=150, height=40, command=returnPlrInfo) #find button
-
-
-rookieLabel = customtkinter.CTkLabel(cardFrame, text="Rookie Name:", font=("Impact", 20), text_color="white")# rookie label
-plrNameLabel = customtkinter.CTkLabel(cardFrame, text=plrName.get(), font=("Impact", 20), text_color="white", textvariable=plrName)# player name label
-draftNumberLabel = customtkinter.CTkLabel(cardFrame, text=globalDraftNumberVariable.get(), font=("Impact", 20), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
-dateGameLabel = customtkinter.CTkLabel(cardFrame, text=date_recent_gameA.get(), font=("Impact", 20), text_color="white", textvariable = date_recent_gameA)# date of game label
-teamLabel = customtkinter.CTkLabel(cardFrame, text=teamA.get(), font=("Impact", 20), text_color="white", textvariable=teamA)# team label
-opponentLabel = customtkinter.CTkLabel(cardFrame, text=opponentA.get(), font=("Impact", 20), text_color="white", textvariable=opponentA)# opponent label
-winOrLoseLabel = customtkinter.CTkLabel(cardFrame, text=winOrLoseA.get(), font=("Impact", 20), text_color="white", textvariable=winOrLoseA)# win or lose label
-scoreLabel = customtkinter.CTkLabel(cardFrame, text=score_ofRecentGameA.get(), font=("Impact", 20), text_color="white", textvariable = score_ofRecentGameA)# score label
+cardFrame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
+rookieLabel = customtkinter.CTkLabel(cardFrame, text="", font=("Roboto", 10), text_color="white")# rookie label
+plrNameLabel = customtkinter.CTkLabel(cardFrame, text=plrName.get(), font=("Roboto", 10), text_color="white", textvariable=plrName)# player name label
+draftNumberLabel = customtkinter.CTkLabel(cardFrame, text=globalDraftNumberVariable.get(), font=("Roboto", 10), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
+dateGameLabel = customtkinter.CTkLabel(cardFrame, text=date_recent_gameA.get(), font=("Roboto", 10), text_color="white", textvariable = date_recent_gameA)# date of game label
+teamLabel = customtkinter.CTkLabel(cardFrame, text=teamA.get(), font=("Roboto", 10), text_color="white", textvariable=teamA)# team label
+opponentLabel = customtkinter.CTkLabel(cardFrame, text=opponentA.get(), font=("Roboto", 10), text_color="white", textvariable=opponentA)# opponent label
+winOrLoseLabel = customtkinter.CTkLabel(cardFrame, text=winOrLoseA.get(), font=("Roboto", 10), text_color="white", textvariable=winOrLoseA)# win or lose label
+scoreLabel = customtkinter.CTkLabel(cardFrame, text=score_ofRecentGameA.get(), font=("Roboto", 10), text_color="white", textvariable = score_ofRecentGameA)# score label
 # This makes the middle columns expand to fill available space
-app.grid_columnconfigure(0, weight=0)
-app.grid_columnconfigure(1, weight=1)  # Center column
-app.grid_columnconfigure(4, weight=0)
+
+  # allow the card area to expand vertically
 
 topLabel.grid(row=0, column=1, padx=20, pady=20, sticky="ew")       # Center label
 topImageLabel1.grid(row=0, column=0, padx=20, pady=20, sticky="w")  # Left image
 topImageLabel2.grid(row=0, column=4, padx=20, pady=20, sticky="e")  # Right image
 
-askLabel.grid(row=1, column=0, padx=20, pady=20, sticky="w")# ask label grid
-draftInput.grid(row=1, column=1, padx=20, pady=20, sticky="w")# draft input grid
-findButton.grid(row=1, column=2, padx=20, pady=20, sticky="w")# find button grid
+askLabel.grid(row=1, column=0, padx=20, pady=10, sticky="w")# ask label grid
+draftInput.grid(row=1, column=1, padx=20, pady=10, sticky="w")# draft input grid
+findButton.grid(row=1, column=2, padx=20, pady=10, sticky="w")# find button grid
 
-profileLabel.grid(row=3, column=0, rowspan=6,  padx=20, pady=20, sticky="nsew") #image label grid
+# smoother card layout: image on left, info stacked on right
+profileLabel.grid(row=0, column=0, rowspan=8,  padx=20, pady=20, sticky="n") #image label grid
+
+# place info labels in the info column (col 1) with consistent spacing
+rookieLabel.grid(row=0, column=1, padx=10, pady=(20, 5), sticky="w")# rookie label grid
+plrNameLabel.grid(row=1, column=1, padx=10, pady=(2, 5), sticky="w")# player name label grid
+draftNumberLabel.grid(row=2, column=1, padx=10, pady=(2, 5), sticky="w")# draft number label grid
+dateGameLabel.grid(row=3, column=1, padx=10, pady=(2, 5), sticky="w")# date of game label grid
+teamLabel.grid(row=4, column=1, padx=10, pady=(2, 5), sticky="w")# team label grid
+opponentLabel.grid(row=5, column=1, padx=10, pady=(2, 5), sticky="w")# opponent label grid
+winOrLoseLabel.grid(row=6, column=1, padx=10, pady=(2, 5), sticky="w")# win/lose label grid
+scoreLabel.grid(row=7, column=1, padx=10, pady=(2, 20), sticky="w")# score label grid
 
 
-cardFrame.grid_propagate(False)
-rookieLabel.grid(row=3, column=1, padx=20, pady=20, sticky="w")# rookie label grid
-plrNameLabel.grid(row=3, column=1, padx=20, pady=20, sticky="nw")# player name label grid
-draftNumberLabel.grid(row=4, column=1, padx=20, pady=20, sticky="nw")# draft number label grid
-dateGameLabel.grid(row=5, column=1, padx=20, pady=20, sticky="nw")# date of game label grid
-teamLabel.grid(row=6, column=1, padx=20, pady=20, sticky="nw")# team label grid
-opponentLabel.grid(row=7, column=1, padx=20, pady=20, sticky="nw")# opponent label grid
-scoreLabel.grid(row=9, column=1, padx=20, pady=20, sticky="nw")# score label grid
 
 
 app.mainloop()
 #FIX NOTES
 
 #make the layout like a "card"
-
