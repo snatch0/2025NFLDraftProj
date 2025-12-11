@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup
 import time
 
 infosheet = open("plrinfo.txt", "w") #file where player info will be stored
@@ -9,6 +9,8 @@ url = 'https://www.pro-football-reference.com/years/2025/draft.htm' # url of my 
 
 response = requests.get(url) # get the page html data
 soup = BeautifulSoup(response.content, 'html.parser') # parse the html data with BeautifulSoup
+#draftPage = ("draft_page.txt", "w")
+#draftPage.write(soup.prettify()) # write the prettified html to a file for reference
 draftNum = 1 # draft pick number starting from 1
 table = soup.find('table', class_="sortable stats_table now_sortable sticky_table eq2 eq4 re4 le2", id='drafts') # find the draft table by its class and id
 
@@ -16,18 +18,12 @@ table = soup.find('table', class_="sortable stats_table now_sortable sticky_tabl
 if table is None: # if the table is not found directly
     table = soup.find('table', id='drafts') #find it by id only
 
-if table is None: # if still not found, it might be in comments
-    for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
-        if 'id = "drafts"' in comment:
-            comment_soup = BeautifulSoup(comment, 'html.parser')
-            table = comment_soup.find('table', id='drafts')
-            if table:
-                break
 
 
+imgFile = open("imgsources.txt", "w")
        
 print(h)
-for td in table.find_all('td', attrs={'data-stat': 'player'}): # loop through each td with data-stat="player"
+for td in table.find_all('td', attrs={'data-stat': 'player'})[:10]: # loop through each td with data-stat="player"
     a_tag = td.find('a')  # find the <a> inside the <td>
     if a_tag: #if a tag exist
         name = a_tag.text.strip()  # get the visible player name
@@ -37,24 +33,43 @@ for td in table.find_all('td', attrs={'data-stat': 'player'}): # loop through ea
     
         base = 'https://www.pro-football-reference.com' # base url for player pages
         url_player = base + a_tag['href']  # get the href attribute, EX: "/players/W/WardCa00.htm"
-        time.sleep(1)  # Be polite and avoid overwhelming the server
+        time.sleep(5)  # Be polite and avoid overwhelming the server
         plrResponse = requests.get(url_player) # get the html data for each player
         soupPlr = BeautifulSoup(plrResponse.content, 'html.parser') # parse the html for each player
+       
+        
+        
+        time.sleep(5)  # Be polite and avoid overwhelming the server
+        plrImg = soupPlr.find('div', class_='media-item') # find the div containing the player image
+        
+        if plrImg:
+            img_tag = plrImg.find('img')  # find the <img> tag inside the div
+            src = img_tag['src'] if img_tag else "N/A"  # get the src attribute of the image
+            imgFile.write(str(draftNum) + "\t" + src + "\n")  # write the prettified html of the image div to a file for reference
+        else:
+            imgFile.write(str(draftNum) + "\t" + "N/A\n")
+        
         plrTable = soupPlr.find('table', id='last5') # find the player table by id 'last5' for last 5 games, WILL NEED AN UPDATE EVERY WEEK MOST LIKELY
         #print(plrTable.prettify)
-        tbody = plrTable.find('tbody') if None else None
+        tbody = plrTable.find('tbody') 
+
+        if tbody is None:
+            team = "N/A"
+            opp = "N/A"
+            wl = "N/A"
+            date_th = "N/A"
 
         date_row = tbody.find('tr') if tbody else None
-        date_th = date_row.find('th', class_='left' ,attrs={'data-stat': 'date'}) if None else  #find the date of the most recent game within the td
-        date_th = date_th.text.strip()
-        team_td = date_row.find('td', attrs={'data-stat': 'team_name_abbr'})
-        opp_td = date_row.find('td', attrs={'data-stat': 'opp_name_abbr'})
-        wl_td = date_row.find('td', attrs={'data-stat': 'game_result'})
-        team = team_td.text.strip() if team_td else "N/A"
+        date_th = date_row.find('th', class_='left' ,attrs={'data-stat': 'date'})   #find the date of the most recent game within the td
+        date_th = date_th.text.strip() if date_th else "N/A"
+        team_td = date_row.find('td', attrs={'data-stat': 'team_name_abbr'}) 
+        opp_td = date_row.find('td', attrs={'data-stat': 'opp_name_abbr'}) 
+        wl_td = date_row.find('td', attrs={'data-stat': 'game_result'}) 
+        team = team_td.text.strip() if team_td else "N/A"   
         opp = opp_td.text.strip() if opp_td else "N/A"
         wl = wl_td.text.strip() if wl_td else "N/A"
-        score = wl[3:]
-        wl = wl[0]
+        score = wl[3:] if wl != "N/A" else "N/A"
+        wl = wl[0] if wl != "N/A" else "N/A"
         
         
           #reference   infosheet.write("#DRAFT" + "\t" + "NAME" + "\t" + "DATE OF RECENT GAME" + "\t" + "TEAM" + "\t" + "OPP" + "\t" + "W/L" + "\n")   
