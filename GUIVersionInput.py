@@ -58,11 +58,15 @@ def changeImg():# function to change image
     
 
 def returnPlrInfo():# function to return player info
-    changeImg()# change image based on draft number
+    
+    
     draft_number = draftInput.get()# get draft number from input
     
+    if draft_number.strip() == "" or not draft_number.isdigit() or int(draft_number) < 1 or int(draft_number) > 256 :# check for invalid input
+        warningLabel.configure(text="Please enter a valid draft number.")
+        return
     print(draft_number)# print draft number to console
-
+    changeImg()# change image based on draft number
     plr_info_file = open("plrinfo.txt", "r")# open player info file
     for line in plr_info_file:# loop through lines in file
         if line.startswith(draft_number):# check if line starts with draft number
@@ -90,13 +94,24 @@ def returnPlrInfo():# function to return player info
             break
 
 
+
 generalFont = ("Roboto", 30, "bold") #general font for app
 
 app.title("NFL 2025 DRAFT APP")
-app.geometry("900x700")
-app.configure(fg_color="#333333")
+app.geometry("900x700") #app window size
+app.configure(fg_color="#333333") #app background color
 
-
+class DashboardCard(customtkinter.CTkFrame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.title("sidebar card")
+        self.geometry("200x700")
+        
+        self.sidebar_expand = True
+        
+if __name__ == "__main__":
+    app = DashboardCard()
+    app.mainloop()
 
 topLabel = customtkinter.CTkLabel(app, text="NFL 2025 Draft App", font=generalFont, text_color="white",
 fg_color="#222222",
@@ -108,8 +123,7 @@ corner_radius=15
 
 cardFrame = customtkinter.CTkFrame(app, width=600, height=700, corner_radius=15, fg_color="#222222")
 
-# make the cardFrame layout smoother: dedicated two columns (image + info)
-cardFrame.rowconfigure((0,1,2,3,4,5,6,7,8,9), weight=1)
+
 #cardFrame.grid_columnconfigure(0, weight=1)  # image column
 #cardFrame.grid_columnconfigure(1, weight=1)  # info column
     
@@ -138,25 +152,26 @@ askLabel = customtkinter.CTkLabel(app, text="Enter Draft Number:", font=("Roboto
 
 draftInput = customtkinter.CTkEntry(app, width=150, height=40, font=("Roboto", 20), textvariable=userDraftInput) #draft input entry
 
+warningLabel = customtkinter.CTkLabel(app, text="", font=("Roboto", 15), text_color="red") # warning label for invalid input
 
 findButton = customtkinter.CTkButton(app, text="Find Player", font=("Roboto", 20), width=150, height=40, command=returnPlrInfo) #find button
 
-cardFrame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
-rookieLabel = customtkinter.CTkLabel(cardFrame, text="", font=("Roboto", 10), text_color="white")# rookie label
-plrNameLabel = customtkinter.CTkLabel(cardFrame, text=plrName.get(), font=("Roboto", 10), text_color="white", textvariable=plrName)# player name label
-draftNumberLabel = customtkinter.CTkLabel(cardFrame, text=globalDraftNumberVariable.get(), font=("Roboto", 10), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
-dateGameLabel = customtkinter.CTkLabel(cardFrame, text=date_recent_gameA.get(), font=("Roboto", 10), text_color="white", textvariable = date_recent_gameA)# date of game label
-teamLabel = customtkinter.CTkLabel(cardFrame, text=teamA.get(), font=("Roboto", 10), text_color="white", textvariable=teamA)# team label
-opponentLabel = customtkinter.CTkLabel(cardFrame, text=opponentA.get(), font=("Roboto", 10), text_color="white", textvariable=opponentA)# opponent label
-winOrLoseLabel = customtkinter.CTkLabel(cardFrame, text=winOrLoseA.get(), font=("Roboto", 10), text_color="white", textvariable=winOrLoseA)# win or lose label
-scoreLabel = customtkinter.CTkLabel(cardFrame, text=score_ofRecentGameA.get(), font=("Roboto", 10), text_color="white", textvariable = score_ofRecentGameA)# score label
+cardFrame.grid(row=2, column=0, padx=20, pady=20, columnspan=4, sticky="nsew")
+rookieLabel = customtkinter.CTkLabel(cardFrame, text="", font=("Roboto", 15), text_color="white")# rookie label
+plrNameLabel = customtkinter.CTkLabel(cardFrame, text=plrName.get(), font=("Roboto", 15), text_color="white", textvariable=plrName)# player name label
+draftNumberLabel = customtkinter.CTkLabel(cardFrame, text=globalDraftNumberVariable.get(), font=("Roboto", 15), text_color="white", textvariable=globalDraftNumberVariable)# draft number label
+dateGameLabel = customtkinter.CTkLabel(cardFrame, text=date_recent_gameA.get(), font=("Roboto", 15), text_color="white", textvariable = date_recent_gameA)# date of game label
+teamLabel = customtkinter.CTkLabel(cardFrame, text=teamA.get(), font=("Roboto", 15), text_color="white", textvariable=teamA)# team label
+opponentLabel = customtkinter.CTkLabel(cardFrame, text=opponentA.get(), font=("Roboto", 15), text_color="white", textvariable=opponentA)# opponent label
+winOrLoseLabel = customtkinter.CTkLabel(cardFrame, text=winOrLoseA.get(), font=("Roboto", 15), text_color="white", textvariable=winOrLoseA)# win or lose label
+scoreLabel = customtkinter.CTkLabel(cardFrame, text=score_ofRecentGameA.get(), font=("Roboto", 15), text_color="white", textvariable = score_ofRecentGameA)# score label
 # This makes the middle columns expand to fill available space
 
   # allow the card area to expand vertically
 
 topLabel.grid(row=0, column=1, padx=20, pady=20, sticky="ew")       # Center label
 topImageLabel1.grid(row=0, column=0, padx=20, pady=20, sticky="w")  # Left image
-topImageLabel2.grid(row=0, column=4, padx=20, pady=20, sticky="e")  # Right image
+topImageLabel2.grid(row=0, column=2, padx=20, pady=20, sticky="e")  # Right image
 
 askLabel.grid(row=1, column=0, padx=20, pady=10, sticky="w")# ask label grid
 draftInput.grid(row=1, column=1, padx=20, pady=10, sticky="w")# draft input grid
